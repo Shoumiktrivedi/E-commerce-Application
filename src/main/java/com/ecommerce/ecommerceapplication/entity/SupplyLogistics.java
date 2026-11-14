@@ -1,4 +1,3 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
@@ -26,7 +25,7 @@ public class SupplyLogistics {
     private String nodeId;
 
     @Column(nullable = false)
-    private Integer quantity = 0;
+    private Integer quantity;
 
     protected SupplyLogistics() {
     }
@@ -39,6 +38,10 @@ public class SupplyLogistics {
 
     public Long getLogisticsId() {
         return logisticsId;
+    }
+
+    public void setLogisticsId(Long logisticsId) {
+        this.logisticsId = logisticsId;
     }
 
     public Catalog getCatalog() {
