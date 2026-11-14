@@ -1,11 +1,11 @@
+
 package com.ecommerce.ecommerceapplication.controller;
 
 import com.ecommerce.ecommerceapplication.dto.AtpResponse;
 import com.ecommerce.ecommerceapplication.service.AtpService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/atp")
@@ -17,10 +17,11 @@ public class AtpController {
         this.atpService = atpService;
     }
 
-    @GetMapping("/{lskid}")
+    @GetMapping("/{lskid}/{nodeId}")
     public AtpResponse getATP(
-            @PathVariable String lskid) {
+            @PathVariable UUID lskid,
+            @PathVariable String nodeId) {
 
-        return atpService.calculateATP(lskid);
+        return atpService.calculateATP(lskid, nodeId);
     }
 }
