@@ -1,4 +1,10 @@
 package com.ecommerce.ecommerceapplication.repository;
 
-public interface CatalogRepository {
+import com.ecommerce.ecommerceapplication.entity.Catalog;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface CatalogRepository
+        extends JpaRepository<Catalog, UUID> {
 }
