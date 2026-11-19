@@ -1,4 +1,3 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
@@ -13,12 +12,14 @@ public class SupplyHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long supplyId;
+    private Long historyId;
 
-    // Relationship with Product
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @ManyToOne
+    @JoinColumn(name = "lskid", nullable = false)
+    private Catalog catalog;
+
+    @Column(name = "node_id", nullable = false, length = 100)
+    private String nodeId;
 
     @Column(nullable = false)
     private Integer quantityAdded;
@@ -26,33 +27,49 @@ public class SupplyHistory {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor required by JPA
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     protected SupplyHistory() {
     }
 
-    // Constructor
-    public SupplyHistory(Product product, Integer quantityAdded) {
-        this.product = product;
+    public SupplyHistory(Catalog catalog,
+                         String nodeId,
+                         Integer quantityAdded) {
+        this.catalog = catalog;
+        this.nodeId = nodeId;
         this.quantityAdded = quantityAdded;
     }
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-
-    public Long getSupplyId() {
-        return supplyId;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getHistoryId() {
+        return historyId;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public Catalog getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(Catalog catalog) {
+        this.catalog = catalog;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public Integer getQuantityAdded() {
@@ -65,5 +82,9 @@ public class SupplyHistory {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

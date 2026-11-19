@@ -1,4 +1,3 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
@@ -11,12 +10,10 @@ import java.time.LocalDateTime;
 @Table(name = "customers")
 public class Customer {
 
-    // Primary Key
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
 
-    // Customer Details
     @NotBlank
     @Column(nullable = false, length = 100)
     private String customerName;
@@ -26,27 +23,30 @@ public class Customer {
     @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    // Creation Timestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor required by JPA
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     protected Customer() {
     }
 
-    // Constructor
     public Customer(String customerName, String email) {
         this.customerName = customerName;
         this.email = email;
     }
 
-    // Set creation timestamp before inserting
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public Long getCustomerId() {
         return customerId;
@@ -70,5 +70,9 @@ public class Customer {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

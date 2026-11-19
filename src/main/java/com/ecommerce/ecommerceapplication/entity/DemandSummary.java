@@ -1,7 +1,8 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -18,7 +19,7 @@ public class DemandSummary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long summaryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "lskid", nullable = false)
     private Catalog catalog;
 
@@ -28,13 +29,34 @@ public class DemandSummary {
     @Column(nullable = false)
     private Integer allocated = 0;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     protected DemandSummary() {
     }
 
-    public DemandSummary(Catalog catalog, String nodeId, Integer allocated) {
+    public DemandSummary(
+            Catalog catalog,
+            String nodeId,
+            Integer allocated) {
+
         this.catalog = catalog;
         this.nodeId = nodeId;
         this.allocated = allocated;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     public Long getSummaryId() {
@@ -63,5 +85,13 @@ public class DemandSummary {
 
     public void setAllocated(Integer allocated) {
         this.allocated = allocated;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

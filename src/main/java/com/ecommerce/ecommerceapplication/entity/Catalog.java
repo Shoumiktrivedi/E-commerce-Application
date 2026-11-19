@@ -1,7 +1,8 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -12,8 +13,7 @@ public class Catalog {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID lskid;
 
-    // Relationship with Product
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
@@ -23,18 +23,31 @@ public class Catalog {
     @Column(nullable = false, length = 50)
     private String size;
 
-    // Default constructor required by JPA
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     protected Catalog() {
     }
 
-    // Constructor
     public Catalog(Product product, String name, String size) {
         this.product = product;
         this.name = name;
         this.size = size;
     }
 
-    // Getters and Setters
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
     public UUID getLskid() {
         return lskid;
@@ -62,5 +75,13 @@ public class Catalog {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

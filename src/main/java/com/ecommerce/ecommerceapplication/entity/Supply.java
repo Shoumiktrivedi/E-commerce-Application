@@ -1,45 +1,68 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "supply")
+@Table(
+        name = "supply",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"lskid", "node_id"}
+                )
+        }
+)
+@Check(constraints = "quantity >= 0")
 public class Supply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pId;
+    private Long supplyId;
+
+    @ManyToOne
+    @JoinColumn(name = "lskid", nullable = false)
+    private Catalog catalog;
 
     @Column(name = "node_id", nullable = false, length = 100)
     private String nodeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lskid", nullable = false)
-    private Catalog catalog;
-
     @Column(nullable = false)
     private Integer quantity = 0;
+
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     protected Supply() {
     }
 
-    public Supply(String nodeId, Catalog catalog, Integer quantity) {
-        this.nodeId = nodeId;
+    public Supply(
+            Catalog catalog,
+            String nodeId,
+            Integer quantity) {
+
         this.catalog = catalog;
+        this.nodeId = nodeId;
         this.quantity = quantity;
     }
 
-    public Long getPId() {
-        return pId;
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    public String getNodeId() {
-        return nodeId;
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
+    public Long getSupplyId() {
+        return supplyId;
     }
 
     public Catalog getCatalog() {
@@ -50,11 +73,27 @@ public class Supply {
         this.catalog = catalog;
     }
 
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

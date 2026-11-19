@@ -1,7 +1,8 @@
-
 package com.ecommerce.ecommerceapplication.entity;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "demand_transaction")
@@ -11,16 +12,16 @@ public class DemandTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
-    @Column(name = "node_id", nullable = false, length = 100)
-    private String nodeId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lskid_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "lskid", nullable = false)
     private Catalog catalog;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
+    @Column(name = "node_id", nullable = false, length = 100)
+    private String nodeId;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -28,27 +29,48 @@ public class DemandTransaction {
     @Column(nullable = false, length = 20)
     private String status = "ACTIVE";
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+
     protected DemandTransaction() {
     }
 
-    public DemandTransaction(String nodeId, Catalog catalog,
-                             Reservation reservation, Integer quantity) {
-        this.nodeId = nodeId;
+    public DemandTransaction(
+            Customer customer,
+            Catalog catalog,
+            String nodeId,
+            Integer quantity) {
+
+        this.customer = customer;
         this.catalog = catalog;
-        this.reservation = reservation;
+        this.nodeId = nodeId;
         this.quantity = quantity;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     public Long getTransactionId() {
         return transactionId;
     }
 
-    public String getNodeId() {
-        return nodeId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setNodeId(String nodeId) {
-        this.nodeId = nodeId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Catalog getCatalog() {
@@ -59,12 +81,12 @@ public class DemandTransaction {
         this.catalog = catalog;
     }
 
-    public Reservation getReservation() {
-        return reservation;
+    public String getNodeId() {
+        return nodeId;
     }
 
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
     }
 
     public Integer getQuantity() {
@@ -81,5 +103,13 @@ public class DemandTransaction {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }
