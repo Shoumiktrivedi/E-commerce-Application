@@ -24,7 +24,7 @@ public class DemandTransaction {
     private String nodeId;
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer quantity = 0;
 
     @Column(nullable = false, length = 20)
     private String status = "ACTIVE";

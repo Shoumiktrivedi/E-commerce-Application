@@ -1,4 +1,8 @@
 package com.ecommerce.ecommerceapplication.repository;
 
-public interface SupplyHistoryRepository {
+import com.ecommerce.ecommerceapplication.entity.SupplyHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SupplyHistoryRepository
+        extends JpaRepository<SupplyHistory, Long> {
 }
